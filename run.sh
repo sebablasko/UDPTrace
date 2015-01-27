@@ -24,6 +24,6 @@ for ((i=1 ; $i<=$num_clients ; i++))
 
 make clean
 
-cat /sys/kernel/debug/tracing/trace > "Trace_"num_sockets"Sockets_"num_threads"Threads_"num_clients"Clients.txt"
+cat /sys/kernel/debug/tracing/trace > "Trace_"$num_sockets"Sockets_"$num_threads"Threads_"$num_clients"Clients.txt"
 
 echo "Done"
