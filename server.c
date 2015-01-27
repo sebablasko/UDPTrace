@@ -23,6 +23,9 @@ int NSOCKETS = 1;
 double segundos;
 int trace_fd = -1;
 char *trace_path = "/sys/kernel/debug/tracing/tracing_on";
+int pid_trace_fd = -1;
+char *pid_trace_path = "/sys/kernel/debug/tracing/set_ftrace_pid";
+//originalmente era no pid
 int marker_fd = -1;
 char *marker_path = "/sys/kernel/debug/tracing/trace_marker";
 
@@ -65,12 +68,16 @@ int main(int argc, char **argv){
 		exit(1);
 	}
 
+	//Recuperar PID
+	int pid = getpid();
 	//Recuperar total de paquetes a enviar
-	MAX_PACKS = atoi(argv[1]);
+	MAX_PACKS = atoi(argv[2]);
 	//Recuperar numero de Threads
-	NTHREADS = atoi(argv[2]);
+	NTHREADS = atoi(argv[3]);
 	//Recuperar numero de sockets a abrir
-	NSOCKETS = atoi(argv[3]);
+	NSOCKETS = atoi(argv[4]);
+
+	printf("El pid es %d\n", pid);
 
 	if(NTHREADS < NSOCKETS){
 		fprintf(stderr, "Error de diseño: No pueden haber menos Threads que sockets\n");
@@ -109,6 +116,14 @@ int main(int argc, char **argv){
 				}else{
 					printf("\tOK\n");
 				}
+				printf("\t%s", pid_trace_path);
+				pid_trace_fd = open(pid_trace_path, O_WRONLY);
+				if(pid_trace_fd < 1){
+					printf("\tError\n");
+					exit(1);
+				}else{
+					printf("\tOK\n");
+				}
 				printf("\t%s", marker_path);
 				marker_fd = open(marker_path, O_WRONLY);
 				if(marker_fd < 1){
@@ -119,6 +134,9 @@ int main(int argc, char **argv){
 				}
 				// Y activar Ftrace
 				write(trace_fd, "1", 1);
+				char tmp[12]={0x0};
+				sprintf(tmp,"%d", pid);
+				write(pid_trace_fd, tmp, sizeof(tmp));
 
 	//Lanzar Threads
 	for(i=0; i < NTHREADS; i++) {
@@ -135,6 +153,7 @@ int main(int argc, char **argv){
 				write(trace_fd, "0", 1);
 				// Y cierre de archivos
 				close(trace_fd);
+				close(pid_trace_fd);
 				close(marker_fd);
 
 	//Medir Fin

@@ -6,6 +6,7 @@ echo "Compilando..."
 make all
 echo "Done"
 
+echo nop > /sys/kernel/debug/tracing/current_tracer
 echo 0 > /sys/kernel/debug/tracing/tracing_on
 echo function_graph > /sys/kernel/debug/tracing/current_tracer
 
