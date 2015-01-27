@@ -9,8 +9,6 @@ echo "Done"
 echo 0 > /sys/kernel/debug/tracing/tracing_on
 echo function_graph > /sys/kernel/debug/tracing/current_tracer
 
-echo "Ejecutando Prueba..."
-
 num_sockets=1
 num_threads=1
 num_clients=4
@@ -21,6 +19,7 @@ for ((i=1 ; $i<=$num_clients ; i++))
 {
 	./client $(($MAX_PACKS*10)) $num_sockets 127.0.0.1 > /dev/null &
 }
+wait $pid
 
 make clean
 
