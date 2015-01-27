@@ -71,11 +71,11 @@ int main(int argc, char **argv){
 	//Recuperar PID
 	int pid = getpid();
 	//Recuperar total de paquetes a enviar
-	MAX_PACKS = atoi(argv[2]);
+	MAX_PACKS = atoi(argv[1]);
 	//Recuperar numero de Threads
-	NTHREADS = atoi(argv[3]);
+	NTHREADS = atoi(argv[2]);
 	//Recuperar numero de sockets a abrir
-	NSOCKETS = atoi(argv[4]);
+	NSOCKETS = atoi(argv[3]);
 
 	printf("El pid es %d\n", pid);
 
