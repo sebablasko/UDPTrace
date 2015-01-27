@@ -136,7 +136,7 @@ int main(int argc, char **argv){
 				write(trace_fd, "1", 1);
 				char tmp[12]={0x0};
 				sprintf(tmp,"%d", pid);
-				//write(pid_trace_fd, tmp, sizeof(tmp));
+				write(pid_trace_fd, tmp, sizeof(tmp));
 
 	//Lanzar Threads
 	for(i=0; i < NTHREADS; i++) {
