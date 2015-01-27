@@ -38,10 +38,11 @@ llamadaHilo(int socket_fd){
 
 	int i;
 	int paquetesParaAtender = MAX_PACKS/NTHREADS;
-
+						// Marca
+						write(marker_fd, "MITRACE: Nuevo Thread\n", 22);
 	for(i = 0; i < paquetesParaAtender; i++) {
 		//lectura = recv(socket_fd, buf, BUF_SIZE, 0);
-						// Marca
+								// Marca
 						write(marker_fd, "MITRACE: Comienza el read del socket\n", 37);
 		lectura = read(socket_fd, buf, BUF_SIZE);
 		if(lectura <= 0) {
