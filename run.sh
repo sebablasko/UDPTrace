@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MAX_PACKS=10000000
+MAX_PACKS=1000000
 
 echo "Compilando..."
 make all
