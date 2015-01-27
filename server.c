@@ -83,7 +83,6 @@ int main(int argc, char **argv){
 	pthread_t pids[NTHREADS];
 	int port = FIRST_PORT;
 	char ports[10];
-	//char thread_name[NTHREADS][NAMELEN];
 
 	if(mostrarInfo)	printf("\n\tPuertos Activados:\n");
 	int i;

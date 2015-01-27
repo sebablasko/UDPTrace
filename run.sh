@@ -1,48 +1,29 @@
 #!/bin/bash
-#Se requiere la variable res_dir
-res_dir=../RESULTS
-#Recuperar parametros
-packages=$1
-shift 1
-repetitions=$1
-shift 1
-threads=$@
+
+MAX_PACKS=10000000
 
 echo "Compilando..."
 make all
 echo "Done"
 
-mkdir perf
+echo 0 > /sys/kernel/debug/tracing/tracing_on
+echo function_graph > /sys/kernel/debug/tracing/current_tracer
+
 echo "Ejecutando Prueba..."
-for num_threads in $threads
-do
-	echo "Evaluando "$num_threads" Threads"
-	linea="$num_threads,";
-	for ((i=1 ; $i<=$repetitions ; i++))
-	{
-		perf record -- ./server $packages $num_threads > aux &
-		#./server $num_threads 1 > aux &
-		pid=$!
-		sleep 1
-		./client $packages 127.0.0.1 > /dev/null &
-		./client $packages 127.0.0.1 > /dev/null &
-		./client $packages 127.0.0.1 > /dev/null &
-		./client $packages 127.0.0.1 > /dev/null &
-		sleep 1
-		wait $pid
-		#wait $pid2
-		#wait $pid3
-		#wait $pid4
-		#wait $pid5
-		linea="$linea$(cat aux)"
-		rm aux
-		perf_file="perf/{"$num_threads"}perf_"$i".data"
-		output_perf_file="perf/{"$num_threads"}perf_"$i".txt"
-		perf report > $output_perf_file
-		mv perf.data $perf_file
-	}
-	output_csv_file=$res_dir"/UDP_times.csv"
-	echo "$linea" >> $output_csv_file
-done
+
+num_sockets=1
+num_threads=1
+num_clients=4
+./server $MAX_PACKS $num_threads $num_sockets &
+pid=$!
+sleep 1
+for ((i=1 ; $i<=$num_clients ; i++))
+{
+	./client $(($MAX_PACKS*10)) $num_sockets 127.0.0.1 > /dev/null &
+}
+
 make clean
+
+cat /sys/kernel/debug/tracing/trace > "Trace_"num_sockets"Sockets_"num_threads"Threads_"num_clients"Clients.txt"
+
 echo "Done"
